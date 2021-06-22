@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1078513428949",
+    "firebase_url": "https://pastillapp-3a11b-default-rtdb.firebaseio.com",
+    "project_id": "pastillapp-3a11b",
+    "storage_bucket": "pastillapp-3a11b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078513428949:android:f9af0be367aab69ec9f55c",
+        "android_client_info": {
+          "package_name": "com.grupoupc.pastillapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1078513428949-u0k092e9qn53pt34lbd3s8kb04nl5rfu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grupoupc.pastillapp",
+            "certificate_hash": "4e882b4236d4ce749bec5646195a716d115cef77"
+          }
+        },
+        {
+          "client_id": "1078513428949-sf40o3bjtfa610rnufq5cu3d9rr0u6q5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkeH5DEADNCCGAyY0rSZf3HZe392dBzAE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1078513428949-sf40o3bjtfa610rnufq5cu3d9rr0u6q5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
