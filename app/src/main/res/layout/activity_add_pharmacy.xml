@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.AddPharmacy">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ_apPhoto"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/logo_app"
+        app:civ_border_color="@color/colorPrimaryDark"
+        app:civ_border_width="1dp" />
+
+    <LinearLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignEnd="@id/civ_apPhoto"
+        android:layout_alignBottom="@id/civ_apPhoto"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_circle"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_camera" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/civ_apPhoto"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_apName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_border_blue"
+            android:fontFamily="@font/hammersmith_one"
+            android:hint="@string/text_pharmacy_name"
+            android:inputType="text"
+            android:padding="16dp"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/et_apAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_border_blue"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/hammersmith_one"
+            android:hint="@string/text_address"
+            android:inputType="textPostalAddress"
+            android:padding="16dp"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/et_apPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_border_blue"
+            android:fontFamily="@font/hammersmith_one"
+            android:hint="@string/text_phone"
+            android:inputType="phone"
+            android:padding="16dp"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/hammersmith_one"
+            android:text="@string/text_business_hours"
+            android:textColor="@color/colorGray"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_apOpen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_border_blue"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@font/hammersmith_one"
+                android:hint="@string/text_open"
+                android:inputType="datetime"
+                android:padding="16dp"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_apClose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_border_blue"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@font/hammersmith_one"
+                android:hint="@string/text_close"
+                android:inputType="datetime"
+                android:padding="16dp"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_apSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/bg_fill_blue"
+            android:fontFamily="@font/hammersmith_one"
+            android:text="@string/text_save"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.FProducts">
+
+    <EditText
+        android:id="@+id/et_searchProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/bg_border_blue"
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="5dp"
+        android:ems="10"
+        android:fontFamily="@font/hammersmith_one"
+        android:hint="@string/text_search_product"
+        android:inputType="text"
+        android:padding="16dp"
+        android:textSize="16sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_searchProduct"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_addProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="30dp"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/ic_add"
+        android:visibility="visible"
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:fabCustomSize="50dp"
+        app:maxImageSize="30dp"
+        app:rippleColor="@color/colorPrimary" />
+</RelativeLayout>

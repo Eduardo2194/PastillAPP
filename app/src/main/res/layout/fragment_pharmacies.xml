@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.FPharmacies">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerPharmacy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_addPharmacy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="30dp"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/ic_add"
+        android:visibility="visible"
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:fabCustomSize="50dp"
+        app:maxImageSize="30dp"
+        app:rippleColor="@color/colorPrimary" />
+
+</RelativeLayout>

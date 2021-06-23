@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.AddProduct">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/img_apPhoto"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:contentDescription="@string/todo"
+                    app:layout_constraintDimensionRatio="H,1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_apText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/hammersmith_one"
+                    android:text="@string/text_add_product"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="26sp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@id/img_apPhoto"
+                    app:layout_constraintEnd_toEndOf="@id/img_apPhoto"
+                    app:layout_constraintStart_toStartOf="@id/img_apPhoto"
+                    app:layout_constraintTop_toTopOf="@id/img_apPhoto" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/et_apName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_border_blue"
+                    android:fontFamily="@font/hammersmith_one"
+                    android:hint="@string/text_product_name"
+                    android:inputType="text"
+                    android:padding="16dp"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/et_apPresentation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_border_blue"
+                    android:fontFamily="@font/hammersmith_one"
+                    android:hint="@string/text_presentation"
+                    android:inputType="text"
+                    android:padding="16dp"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/et_apCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_border_blue"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                    android:fontFamily="@font/hammersmith_one"
+                    android:hint="@string/text_category"
+                    android:inputType="text"
+                    android:padding="16dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/hammersmith_one"
+                    android:text="@string/text_prescription"
+                    android:textSize="16sp" />
+
+                <RadioGroup
+                    android:id="@+id/rg_apPrescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_apYes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/colorPrimaryDark"
+                        android:checked="true"
+                        android:text="@string/text_yes" />
+
+                    <RadioButton
+                        android:id="@+id/rb_apNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/colorPrimaryDark"
+                        android:text="@string/text_no" />
+                </RadioGroup>
+
+                <EditText
+                    android:id="@+id/et_apRegisterDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_border_blue"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/hammersmith_one"
+                    android:hint="@string/text_register_date"
+                    android:inputType="date"
+                    android:padding="16dp"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/et_apDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_border_blue"
+                    android:fontFamily="@font/hammersmith_one"
+                    android:hint="@string/text_description"
+                    android:inputType="textMultiLine"
+                    android:padding="16dp"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_apSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_fill_blue"
+                    android:fontFamily="@font/hammersmith_one"
+                    android:text="@string/text_save"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>
