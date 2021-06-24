@@ -133,6 +133,7 @@
                     android:background="@drawable/bg_border_blue"
                     android:clickable="true"
                     android:focusable="true"
+                    android:enabled="false"
                     android:fontFamily="@font/hammersmith_one"
                     android:hint="@string/text_register_date"
                     android:inputType="date"

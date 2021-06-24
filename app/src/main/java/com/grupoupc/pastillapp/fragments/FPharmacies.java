@@ -31,6 +31,8 @@ public class FPharmacies extends Fragment {
     private RecyclerView recyclerPharmacy;
     private List<Pharmacy> pharmacyList;
 
+
+    //preguntar a Jose
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
