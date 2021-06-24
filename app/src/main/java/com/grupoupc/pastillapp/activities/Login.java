@@ -118,10 +118,11 @@ public class Login extends AppCompatActivity {
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
-                            } else {
-                                progressDialog.dismiss();
-                                Toast.makeText(Login.this, "Ocurrió un error, intente de nuevo por favor.", Toast.LENGTH_SHORT).show();
                             }
+                            //else {
+                            //    progressDialog.dismiss();
+                            //       Toast.makeText(Login.this, task.getResult().toString(), Toast.LENGTH_SHORT).show();
+                           //}
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
