@@ -1,18 +1,8 @@
 package com.grupoupc.pastillapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +11,10 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -36,16 +30,14 @@ import com.google.firebase.storage.UploadTask;
 import com.grupoupc.pastillapp.R;
 import com.grupoupc.pastillapp.utils.Constantes;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AddProduct extends AppCompatActivity {
     private ImageView imgProductPhoto;
@@ -58,6 +50,7 @@ public class AddProduct extends AppCompatActivity {
     private Uri imageUri = null;
 
     private StorageReference storageReference;
+    private String PRODUCT_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,42 +74,35 @@ public class AddProduct extends AppCompatActivity {
         imgProductPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                Constantes.openGallery(AddProduct.this);
             }
         });
 
-        loadCurrentDate();
+        String PRODUCT_ACTION = getIntent().getStringExtra("action");
+        PRODUCT_ID = getIntent().getStringExtra(Constantes.P_ID);
 
-        // Al hacer clic en el Button llamamos al metodo registerUser
-        btnSaveProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerProduct();
+        switch (PRODUCT_ACTION) {
+            case "add": {
+                loadCurrentDate();
+                btnSaveProduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        registerProduct();
+                    }
+                });
             }
-        });
-    }
-
-    // Abrimos la galeria del usuario
-    private void openGallery() {
-        // Validamos si tenemos los permisos de acceso a la galeria, solo para android 6 o superior
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(AddProduct.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(AddProduct.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            } else {
-                cropImagePicker(); // Llamamos al servico de CropImageActivity
+            break;
+            case "update": {
+                btnSaveProduct.setText(getString(R.string.text_update_product));
+                loadProductDetails();
+                btnSaveProduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        updateProduct();
+                    }
+                });
             }
-        } else {
-            // Versiones anteriores a android 5.1 no necesitan solicitar permiso
-            cropImagePicker(); // Llamamos al servico de CropImageActivity
         }
-    }
-
-    private void cropImagePicker() {
-        // Configuramos el recorte de la imagen, aspecto cuadrado
-        CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(1, 1)
-                .start(AddProduct.this);
     }
 
     // Subimos a Firebase storage la imagen recortada
@@ -210,11 +196,40 @@ public class AddProduct extends AppCompatActivity {
         etPRegisterDate.setText(currentDate);
     }
 
+    // Recogemos los datos del producto a actualizar
+    private void loadProductDetails() {
+        tvTitleAddImage.setVisibility(View.GONE);
+        String pName = getIntent().getStringExtra(Constantes.P_NAME);
+        String pCategory = getIntent().getStringExtra(Constantes.P_CATEGORY);
+        String pDescription = getIntent().getStringExtra(Constantes.P_DESCRIPTION);
+        String pPresentation = getIntent().getStringExtra(Constantes.P_PRESENTATION);
+        String pRegisterDate = getIntent().getStringExtra(Constantes.P_REGISTER_DATE);
+        String pPrescription = getIntent().getStringExtra(Constantes.P_PRESCRIPTION);
+        String pPhoto = getIntent().getStringExtra(Constantes.P_PHOTO);
+
+        Glide.with(getApplicationContext())
+                .load(pPhoto)
+                .into(imgProductPhoto);
+
+        productPhotoUrl = pPhoto;
+        etPName.setText(pName);
+        etPPresentation.setText(pPresentation);
+        etPCategory.setText(pCategory);
+        etPRegisterDate.setText(pRegisterDate);
+        etPDescription.setText(pDescription);
+
+        if (pPrescription.equals(Constantes.YES)) {
+            rbYes.setChecked(true);
+        } else {
+            rbNo.setChecked(true);
+        }
+    }
+
     // Registramos el producto
     private void registerProduct() {
         String prescription = "";
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference productReference = database.getReference(Constantes.N_PRODUCT).push();
+        DatabaseReference productReference = database.getReference(Constantes.N_PRODUCT).push(); // Obtenemos el ID del producto registrado
 
         String productId = productReference.getKey();
         String productName = etPName.getText().toString().trim();
@@ -267,13 +282,89 @@ public class AddProduct extends AppCompatActivity {
             productReference.setValue(productValues).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         progressDialog.dismiss();
                         Toast.makeText(AddProduct.this, "Producto agregado con éxito", Toast.LENGTH_SHORT).show();
                         restartViews();
                     } else {
                         progressDialog.dismiss();
                         Toast.makeText(AddProduct.this, Objects.requireNonNull(task.getException()).getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    // Actualizamos producto
+    private void updateProduct() {
+        String prescription = "";
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference productReference = database.getReference(Constantes.N_PRODUCT).child(PRODUCT_ID);
+
+        String productName = etPName.getText().toString().trim();
+        String productPresentation = etPPresentation.getText().toString().trim();
+        String productCategory = etPCategory.getText().toString().trim();
+        String productRegisterDate = etPRegisterDate.getText().toString().trim();
+        String productDescription = etPDescription.getText().toString().trim();
+
+        // Seteamos un valor de acuerdo al RadioButton seleccionado (Tiene o no receta medica)
+        if (rbYes.isChecked()) {
+            prescription = Constantes.YES;
+        } else if (rbNo.isChecked()) {
+            prescription = Constantes.NO;
+        }
+
+        // Validamos los campos obligatorios
+        if (productName.isEmpty()) {
+            etPName.setError("El nombre del producto es obligatorio");
+            etPName.requestFocus();
+        } else if (productPresentation.isEmpty()) {
+            etPPresentation.setError("La presentación del prodcuto es obligatorio");
+            etPPresentation.requestFocus();
+        } else if (productCategory.isEmpty()) {
+            etPCategory.setError("La categoría del producto es obligatorio");
+            etPCategory.requestFocus();
+        } else if (productPhotoUrl == null) {
+            tvTitleAddImage.setText(getString(R.string.text_required_image));
+
+            // Si el usuario no ha cargado una imagen, el background de nuestro ImageView se veré rojo
+            imgProductPhoto.setBackgroundColor(getResources().getColor(R.color.colorRed));
+            Toast.makeText(AddProduct.this, "La foto del producto es obligatorio", Toast.LENGTH_SHORT).show();
+        } else {
+            progressDialog = ProgressDialog.show(AddProduct.this,
+                    "Actualizando producto",
+                    "Espere por favor",
+                    true,
+                    false);
+
+            Map<String, Object> productValuesUpdate = new HashMap<>();
+            productValuesUpdate.put(Constantes.P_NAME, productName);
+            productValuesUpdate.put(Constantes.P_PRESENTATION, productPresentation);
+            productValuesUpdate.put(Constantes.P_CATEGORY, productCategory);
+            productValuesUpdate.put(Constantes.P_PRESCRIPTION, prescription);
+            productValuesUpdate.put(Constantes.P_REGISTER_DATE, productRegisterDate);
+            productValuesUpdate.put(Constantes.P_DESCRIPTION, productDescription);
+            productValuesUpdate.put(Constantes.P_PHOTO, productPhotoUrl);
+
+            String productPrescription = prescription;
+            productReference.updateChildren(productValuesUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        progressDialog.dismiss();
+                        Toast.makeText(AddProduct.this, "Producto actualizado con éxito", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(AddProduct.this, ProductDetail.class);
+                        i.putExtra("back", "home");
+                        i.putExtra(Constantes.P_ID, PRODUCT_ID);
+                        i.putExtra(Constantes.P_PHOTO, productPhotoUrl);
+                        i.putExtra(Constantes.P_NAME, productName);
+                        i.putExtra(Constantes.P_PRESENTATION, productPresentation);
+                        i.putExtra(Constantes.P_CATEGORY, productCategory);
+                        i.putExtra(Constantes.P_PRESCRIPTION, productPrescription);
+                        i.putExtra(Constantes.P_REGISTER_DATE, productRegisterDate);
+                        i.putExtra(Constantes.P_DESCRIPTION, productDescription);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
                     }
                 }
             });

@@ -1,19 +1,14 @@
 package com.grupoupc.pastillapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.os.Build;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -24,9 +19,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,17 +39,27 @@ import com.grupoupc.pastillapp.R;
 import com.grupoupc.pastillapp.adapters.AvailableAdapter;
 import com.grupoupc.pastillapp.models.Available;
 import com.grupoupc.pastillapp.models.Pharmacy;
+import com.grupoupc.pastillapp.models.User;
 import com.grupoupc.pastillapp.utils.Constantes;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 public class ProductDetail extends AppCompatActivity {
 
-    private String pId;
+    private String pId, pName, pCategory, pDescription, pPresentation, pRegisterDate, pPrescription, pPhoto, back;
     private ImageView imgProduct;
     private TextView txtName, txtCategory, txtDescription, txtPresentation, txtRegisterDate, txtPrescription;
     private String pharmacySelectedId, pharmacySelectedName;
@@ -55,20 +67,15 @@ public class ProductDetail extends AppCompatActivity {
     private RecyclerView recyclerAvailable;
     private List<Available> availableList;
 
+    static ProductDetail INSTANCE;
+
+    private DatabaseReference userReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        INSTANCE = this;
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            final WindowInsetsController insetsController = getWindow().getDecorView().getWindowInsetsController();
-            if (insetsController != null) {
-                insetsController.hide(WindowInsets.Type.statusBars());
-            }
-        } else {
-            getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
-            );
-        }
+        Constantes.setFullScreen(ProductDetail.this);
         setContentView(R.layout.activity_product_detail);
 
         imgProduct = findViewById(R.id.img_pdPhoto);
@@ -80,11 +87,42 @@ public class ProductDetail extends AppCompatActivity {
         txtPrescription = findViewById(R.id.tv_pdPrescription);
         LinearLayout llActions = findViewById(R.id.ll_actions);
         Button btnAddPharmacy = findViewById(R.id.btn_AddPharmacy);
+        Button btnUpdateProduct = findViewById(R.id.btn_EditProduct);
 
         recyclerAvailable = findViewById(R.id.recyclerAvailable);
         availableList = new ArrayList<>();
 
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        userReference = FirebaseDatabase.getInstance().getReference(Constantes.N_USER).child(mUser.getUid());
+
         Constantes.validateUserType(llActions); //Hide actions buttons if user isn't Admin
+
+        pId = getIntent().getStringExtra(Constantes.P_ID);
+        pName = getIntent().getStringExtra(Constantes.P_NAME);
+        pCategory = getIntent().getStringExtra(Constantes.P_CATEGORY);
+        pDescription = getIntent().getStringExtra(Constantes.P_DESCRIPTION);
+        pPresentation = getIntent().getStringExtra(Constantes.P_PRESENTATION);
+        pRegisterDate = getIntent().getStringExtra(Constantes.P_REGISTER_DATE);
+        pPrescription = getIntent().getStringExtra(Constantes.P_PRESCRIPTION);
+        pPhoto = getIntent().getStringExtra(Constantes.P_PHOTO);
+        back = getIntent().getStringExtra("back");
+
+        btnUpdateProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ProductDetail.this, AddProduct.class);
+                i.putExtra("action", "update");
+                i.putExtra(Constantes.P_ID, pId);
+                i.putExtra(Constantes.P_PHOTO, pPhoto);
+                i.putExtra(Constantes.P_NAME, pName);
+                i.putExtra(Constantes.P_PRESENTATION, pPresentation);
+                i.putExtra(Constantes.P_CATEGORY, pCategory);
+                i.putExtra(Constantes.P_PRESCRIPTION, pPrescription);
+                i.putExtra(Constantes.P_REGISTER_DATE, pRegisterDate);
+                i.putExtra(Constantes.P_DESCRIPTION, pDescription);
+                startActivity(i);
+            }
+        });
 
         btnAddPharmacy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,19 +133,11 @@ public class ProductDetail extends AppCompatActivity {
 
         loadProductDetail();
         loadPharmaciesAvailable();
+        setCountVisits();
     }
 
     // Cargamos los datos del producto
     private void loadProductDetail() {
-        pId = getIntent().getStringExtra(Constantes.P_ID);
-        String pName = getIntent().getStringExtra(Constantes.P_NAME);
-        String pCategory = getIntent().getStringExtra(Constantes.P_CATEGORY);
-        String pDescription = getIntent().getStringExtra(Constantes.P_DESCRIPTION);
-        String pPresentation = getIntent().getStringExtra(Constantes.P_PRESENTATION);
-        String pRegisterDate = getIntent().getStringExtra(Constantes.P_REGISTER_DATE);
-        String pPrescription = getIntent().getStringExtra(Constantes.P_PRESCRIPTION);
-        String pPhoto = getIntent().getStringExtra(Constantes.P_PHOTO);
-
         // Mostramos u ocultamos el elemento si esta o no vacío
         if (pDescription.isEmpty()) {
             txtDescription.setVisibility(View.GONE);
@@ -207,14 +237,20 @@ public class ProductDetail extends AppCompatActivity {
 
     private void saveInfo(String pharmacySelectedId, String pharmacySelectedName, AutoCompleteTextView acPharmaciesList,
                           EditText etProductPrice, AlertDialog dialog) {
-        DatabaseReference pharmacyReference = FirebaseDatabase.getInstance().getReference(Constantes.N_AVAILABLE)
-                .child(pId)
-                .child(this.pharmacySelectedId);
-
+        DatabaseReference pharmacyReference = null;
+        if(this.pharmacySelectedId==null){
+            Toast.makeText(ProductDetail.this, "Debe eligir una farmacia", Toast.LENGTH_SHORT).show();
+            //acPharmaciesList.setError("Debe eligir una farmacia");
+        }else {
+            pharmacyReference = FirebaseDatabase.getInstance().getReference(Constantes.N_AVAILABLE)
+                    .child(pId)
+                    .child(this.pharmacySelectedId);
+        }
         String productPrice = etProductPrice.getText().toString();
 
-        if (this.pharmacySelectedName.isEmpty()) {
-            acPharmaciesList.setError("Debe eligir una farmacia");
+        if (this.pharmacySelectedName==null) {
+            Toast.makeText(ProductDetail.this, "Debe eligir una farmacia", Toast.LENGTH_SHORT).show();
+            //acPharmaciesList.setError("Debe eligir una farmacia");
         } else if (productPrice.isEmpty()) {
             etProductPrice.setError("El precio es obligatorio");
         } else {
@@ -269,7 +305,7 @@ public class ProductDetail extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 availableList.clear();
-                for(DataSnapshot dsAvailable: snapshot.getChildren()) {
+                for (DataSnapshot dsAvailable : snapshot.getChildren()) {
                     Available available = dsAvailable.getValue(Available.class);
                     availableList.add(available);
 
@@ -293,5 +329,81 @@ public class ProductDetail extends AppCompatActivity {
         availableAdapter.notifyDataSetChanged();
         recyclerAvailable.setLayoutManager(manager);
         recyclerAvailable.setAdapter(availableAdapter);
+    }
+
+    public static ProductDetail getActivityInstance() {
+        return INSTANCE;
+    }
+
+    public String getProductName() {
+        return this.pName;
+    }
+
+    private void setCountVisits() {
+        ProgressDialog progressDialog = ProgressDialog.show(this,
+                "Cargando información",
+                "Espere por favor",
+                true,
+                false);
+
+        // Obtenemos la fecha actual
+        Calendar calendar = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String fecvisita = dateFormat.format(calendar.getTime());
+
+        userReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+
+                assert user != null;
+                if (!user.getType().equals(Constantes.ADMIN)) {
+                    // Si es admin no contabiliza las visitas
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String requestJson = "{\n" +
+                                        "\t\"visitas\":{\n" +
+                                        "\t\t\"fecvisita\": \"" + fecvisita + "\",\n" +
+                                        "\t\t\"cantvisita\": \"" + Constantes.ONE + "\"\n" +
+                                        "\t}\n" +
+                                        "}";
+
+                                HttpHeaders headers = new HttpHeaders();
+                                headers.setContentType(MediaType.APPLICATION_JSON);
+                                Log.i("POST", requestJson);
+
+                                HttpEntity<String> entity = new HttpEntity<String>(requestJson, headers);
+                                ResponseEntity<String> output = new RestTemplate().exchange(Constantes.VISITS_API_BASE_URL, HttpMethod.POST, entity, String.class);
+
+                                Log.i("POST", output.toString());
+                                progressDialog.dismiss();
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else {
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (back.equals("home")) {
+            startActivity(new Intent(ProductDetail.this, Home.class));
+            finish();
+        }
     }
 }

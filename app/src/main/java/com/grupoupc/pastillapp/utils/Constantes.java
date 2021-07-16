@@ -1,8 +1,17 @@
 package com.grupoupc.pastillapp.utils;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -12,6 +21,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.grupoupc.pastillapp.models.User;
+import com.grupoupc.pastillapp.utils.APIClient.CountApiClient;
+import com.grupoupc.pastillapp.utils.APIClient.ICountAPI;
+import com.grupoupc.pastillapp.utils.APIGoogle.GoogleAPIClient;
+import com.grupoupc.pastillapp.utils.APIGoogle.IGoogleAPI;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.Calendar;
 
@@ -28,7 +43,8 @@ public class Constantes {
     public static final String PH_ID = "id";
     public static final String PH_NAME = "name";
     public static final String PH_ADDRESS = "address";
-    public static final String PH_PLACE_ID = "place_id";
+    public static final String PH_LATITUDE = "latitude";
+    public static final String PH_LONGITUDE = "longitude";
     public static final String PH_PHONE = "phone";
     public static final String PH_OPEN = "open";
     public static final String PH_CLOSE = "close";
@@ -40,7 +56,7 @@ public class Constantes {
     public static final String P_PRESENTATION = "presentation";
     public static final String P_CATEGORY = "category";
     public static final String P_PRESCRIPTION = "prescription";
-    public static final String P_REGISTER_DATE= "register_date";
+    public static final String P_REGISTER_DATE = "register_date";
     public static final String P_DESCRIPTION = "description";
     public static final String P_PHOTO = "photo";
 
@@ -54,6 +70,11 @@ public class Constantes {
     // TODO: Firebase Storage
     public static final String S_PHARMACY = "pharmacy_profile";
     public static final String S_PRODUCT = "product_photo";
+    public static final String S_USER = "user_photo";
+
+    // TODO: Other values
+    private static final String GOOGLE_API_BASE_URL = "https://maps.googleapis.com";
+    public static final String VISITS_API_BASE_URL = "https://app-sistemas-distribuidos.herokuapp.com/metro-app-service/usuario/visita/";
 
     // TODO: Other values
     public static final String ADMIN = "admin";
@@ -61,6 +82,7 @@ public class Constantes {
     public static final String EXTENSION_JPG = ".jpg";
     public static final String YES = "Y";
     public static final String NO = "N";
+    public static final String ONE = "1";
 
     // TODO: Global Methods
     public static String getTimeInMilliSeconds() {
@@ -69,8 +91,7 @@ public class Constantes {
         return String.valueOf((rightNow.getTimeInMillis() + offSet) % (24 * 60 * 60 * 1000));
     }
 
-
-
+    //validamos si la vista se va mostrar u ocultar, según el perfil admin o user
     public static void validateUserType(View view) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
@@ -96,4 +117,48 @@ public class Constantes {
             }
         });
     }
+
+    public static void setFullScreen(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // Android 11 o superior
+            final WindowInsetsController insetsController = activity.getWindow().getDecorView().getWindowInsetsController();
+            if (insetsController != null) {
+                insetsController.hide(WindowInsets.Type.statusBars());
+            }
+        } else { // Menor a android 11
+            activity.getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+            );
+        }
+    }
+
+    public static IGoogleAPI getGoogleServices() {
+        return GoogleAPIClient.getClient(GOOGLE_API_BASE_URL)
+                .create(IGoogleAPI.class);
+    }
+
+    public static ICountAPI getVisitsServices() {
+        return CountApiClient.getClient(VISITS_API_BASE_URL)
+                .create(ICountAPI.class);
+    }
+
+    public static void openGallery(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            } else {
+                cropImagePicker(activity);
+            }
+        } else {
+            cropImagePicker(activity);
+        }
+    }
+
+    public static void cropImagePicker(Activity activity) {
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setAspectRatio(1, 1)
+                .start(activity);
+    }
+
 }

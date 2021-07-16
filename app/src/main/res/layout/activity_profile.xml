@@ -17,6 +17,30 @@
         app:civ_border_width="1dp" />
 
     <LinearLayout
+        android:id="@+id/ll_viewReport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_report" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/hammersmith_one"
+            android:text="@string/text_view_report" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignEnd="@id/civ_pPhoto"
@@ -49,22 +73,60 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/txt_pUsername"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/rl_username"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/txt_pTitleUsername"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/hammersmith_one"
-            android:textColor="@color/colorGray"
-            android:textSize="18sp"
-            tools:text="Administrador" />
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/txt_pUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/hammersmith_one"
+                android:textColor="@color/colorGray"
+                android:textSize="18sp"
+                android:visibility="visible"
+                tools:text="Administrador" />
+
+            <EditText
+                android:id="@+id/et_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@id/img_save"
+                android:background="@drawable/bg_border_blue"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/img_edit"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_edit"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/img_save"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_save"
+                android:visibility="gone" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/txt_pTitleEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txt_pUsername"
+            android:layout_below="@id/rl_username"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/hammersmith_one"
             android:text="@string/text_email"
@@ -96,4 +158,5 @@
             android:textSize="18sp"
             android:textStyle="bold" />
     </RelativeLayout>
+
 </RelativeLayout>

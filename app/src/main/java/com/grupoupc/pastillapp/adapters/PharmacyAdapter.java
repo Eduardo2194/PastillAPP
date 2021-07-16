@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -14,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.grupoupc.pastillapp.R;
-//import com.grupoupc.pastillapp.activities.PharmacyDetail;
+import com.grupoupc.pastillapp.activities.PharmacyDetail;
 import com.grupoupc.pastillapp.models.Pharmacy;
 import com.grupoupc.pastillapp.utils.Constantes;
 
@@ -54,15 +53,16 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
         holder.cardPharmacy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i = new Intent(context, PharmacyDetail.class);
-//                i.putExtra(Common.PH_ID, pos.getId());
-//                i.putExtra(Common.PH_NAME, pos.getName());
-//                i.putExtra(Common.PH_OPEN, pos.getOpen());
-//                i.putExtra(Common.PH_CLOSE, pos.getClose());
-//                i.putExtra(Common.PH_PHONE, pos.getPhone());
-//                i.putExtra(Common.PH_ADDRESS, pos.getAddress());
-//                i.putExtra(Common.PH_PHOTO, pos.getPhoto());
-//                context.startActivity(i);
+                Intent i = new Intent(context, PharmacyDetail.class);
+                i.putExtra(Constantes.PH_ID, pos.getId());
+                i.putExtra(Constantes.PH_NAME, pos.getName());
+                i.putExtra(Constantes.PH_OPEN, pos.getOpen());
+                i.putExtra(Constantes.PH_CLOSE, pos.getClose());
+                i.putExtra(Constantes.PH_PHONE, pos.getPhone());
+                i.putExtra(Constantes.PH_ADDRESS, pos.getAddress());
+                i.putExtra(Constantes.PH_PHOTO, pos.getPhoto());
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(i);
             }
         });
     }

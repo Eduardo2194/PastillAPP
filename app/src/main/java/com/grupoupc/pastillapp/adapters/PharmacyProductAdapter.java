@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -19,40 +19,36 @@ import com.grupoupc.pastillapp.utils.Constantes;
 
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+public class PharmacyProductAdapter extends RecyclerView.Adapter<PharmacyProductAdapter.PharmacyProductViewHolder> {
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     Context context;
     List<Product> productList;
 
-    public ProductAdapter(Context context, List<Product> productList) {
+    public PharmacyProductAdapter(Context context, List<Product> productList) {
         this.context = context;
         this.productList = productList;
     }
 
     @NonNull
     @Override
-    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ProductViewHolder(LayoutInflater.from(context)
-                .inflate(R.layout.item_list_product, parent, false));
+    public PharmacyProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new PharmacyProductViewHolder(LayoutInflater.from(context)
+                .inflate(R.layout.item_grid_product, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProductAdapter.ProductViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PharmacyProductAdapter.PharmacyProductViewHolder holder, int position) {
         Product pos = productList.get(position);
 
         Glide.with(context)
                 .load(pos.getPhoto())
-                .into(holder.civProductPhoto);
+                .into(holder.imgProduct);
 
-        holder.tvProductName.setText(pos.getName());
-
-        //al hacer click en el card view del producto nos envia a la detalle del producto cargando su información
         holder.cardProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, ProductDetail.class);
-                i.putExtra("back","home");
+                i.putExtra("back","pharmacy");
                 i.putExtra(Constantes.P_ID, pos.getId());
                 i.putExtra(Constantes.P_NAME, pos.getName());
                 i.putExtra(Constantes.P_CATEGORY, pos.getCategory());
@@ -72,23 +68,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return productList.size();
     }
 
-    // Para la BUSQUEDA de productos
-    public void filterList(List<Product> productsArrayList) {
-        productList = productsArrayList;
-        notifyDataSetChanged();
-    }
-
-    public static class ProductViewHolder extends RecyclerView.ViewHolder {
+    public static class PharmacyProductViewHolder extends RecyclerView.ViewHolder {
         CardView cardProduct;
-        CircleImageView civProductPhoto;
-        TextView tvProductName;
+        ImageView imgProduct;
 
-        public ProductViewHolder(@NonNull View itemView) {
+        public PharmacyProductViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            cardProduct = itemView.findViewById(R.id.card_product);
-            civProductPhoto = itemView.findViewById(R.id.civ_productPhoto);
-            tvProductName = itemView.findViewById(R.id.tv_productName);
+            cardProduct = itemView.findViewById(R.id.card_gridProduct);
+            imgProduct = itemView.findViewById(R.id.img_productAvailable);
         }
     }
 }

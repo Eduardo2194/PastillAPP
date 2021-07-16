@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 import com.grupoupc.pastillapp.R;
 import com.grupoupc.pastillapp.adapters.HomeViewPagerAdapter;
 import com.grupoupc.pastillapp.fragments.FPharmacies;
@@ -81,7 +78,7 @@ public class Home extends AppCompatActivity {
                 false);
 
         // Referenciamos el nodo USER de firebase database
-            DatabaseReference userReference = FirebaseDatabase.getInstance().getReference(Constantes.N_USER).child(mUser.getUid());
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference(Constantes.N_USER).child(mUser.getUid());
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -121,5 +118,16 @@ public class Home extends AppCompatActivity {
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_products);
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_pharmacies);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // Salimos de la aplicación cuando estemos en esta pantamma HOME
+        Intent close = new Intent(Intent.ACTION_MAIN);
+        close.addCategory(Intent.CATEGORY_HOME);
+        close.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(close);
     }
 }

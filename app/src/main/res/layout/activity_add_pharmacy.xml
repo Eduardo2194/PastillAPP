@@ -75,6 +75,7 @@
             android:fontFamily="@font/hammersmith_one"
             android:hint="@string/text_phone"
             android:inputType="phone"
+            android:maxLength="9"
             android:padding="16dp"
             android:textSize="16sp" />
 

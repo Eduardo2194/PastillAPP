@@ -1,17 +1,18 @@
 package com.grupoupc.pastillapp.models;
 
 public class Pharmacy {
-    String id, name, address, place_id, phone, open, close, photo;
+    String id, name, address, latitude, longitude, phone, open, close, photo;
 
     public Pharmacy() {
 
     }
 
-    public Pharmacy(String id, String name, String address, String place_id, String phone, String open, String close, String photo) {
+    public Pharmacy (String id, String name, String address, String latitude, String longitude, String phone, String open, String close, String photo) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.place_id = place_id;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.phone = phone;
         this.open = open;
         this.close = close;
@@ -30,8 +31,12 @@ public class Pharmacy {
         return address;
     }
 
-    public String getPlace_id() {
-        return place_id;
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
     }
 
     public String getPhone() {

@@ -54,7 +54,9 @@ public class FProducts extends Fragment {
         fabAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), AddProduct.class));
+                Intent i = new Intent(getActivity(), AddProduct.class);
+                i.putExtra("action", "add");
+                startActivity(i);
             }
         });
 

@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.grupoupc.pastillapp.R;
 import com.grupoupc.pastillapp.activities.AddPharmacy;
@@ -31,8 +32,6 @@ public class FPharmacies extends Fragment {
     private RecyclerView recyclerPharmacy;
     private List<Pharmacy> pharmacyList;
 
-
-    //preguntar a Jose
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,7 +59,9 @@ public class FPharmacies extends Fragment {
 
     private void loadPharmacies() {
         DatabaseReference pharmacyReference = FirebaseDatabase.getInstance().getReference(Constantes.N_PHARMACY);
-        pharmacyReference.addValueEventListener(new ValueEventListener() {
+        Query query = pharmacyReference.orderByChild(Constantes.PH_NAME);
+
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 pharmacyList.clear();

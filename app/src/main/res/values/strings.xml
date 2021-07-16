@@ -45,8 +45,20 @@
     <string name="text_pharmacy">Farmacia</string>
     <string name="text_location">Ubicación</string>
     <string name="text_view_address">Ver dirección</string>
-
-    <string name="google_places_key">AIzaSyCBanGarKE_U6oegUkcBsanprYti48CQ_0</string>
+    <string name="text_call">Llamar</string>
+    <string name="text_share">Compartir</string>
+    <string name="text_location_denied">No se pudo calcular a cuanto tiempo está del punto destino</string>
     <string name="text_title_products">Productos disponibles</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="text_update_product">Actualizar producto</string>
+    <string name="text_view_report">Ver reporte</string>
+    <string name="text_title_report">Reporte de Visitas</string>
+    <string name="header_table_pos">#</string>
+    <string name="header_table_date">Día de Visita</string>
+    <string name="header_table_count">Nro. Visitas</string>
+
+    <!--Google Maps API's-->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAF-Zd_X2nGoOTTGQhXAZ59DhHFyyZyKhE</string>
+    <string name="google_places_key">AIzaSyCkeH5DEADNCCGAyY0rSZf3HZe392dBzAE</string>
+    <string name="google_browser_key">AIzaSyBy81nmmnq2oYSAoskuqadMDp1P_-fcaAE</string>
+
 </resources>

@@ -1,26 +1,23 @@
 package com.grupoupc.pastillapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.grupoupc.pastillapp.R;
+import com.grupoupc.pastillapp.utils.Constantes;
 
 public class RecoverPassword extends AppCompatActivity {
 
@@ -29,19 +26,7 @@ public class RecoverPassword extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Full screen
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // Android 11 o superior
-            final WindowInsetsController insetsController = getWindow().getDecorView().getWindowInsetsController();
-            if (insetsController != null) {
-                insetsController.hide(WindowInsets.Type.statusBars());
-            }
-        } else { // Menor a android 11
-            getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
-            );
-        }
+        Constantes.setFullScreen(RecoverPassword.this);
         setContentView(R.layout.activity_recover_password);
 
         etEmail = findViewById(R.id.et_fEmail);

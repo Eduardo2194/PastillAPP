@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grupoupc.pastillapp.R;
-//import com.grupoupc.pastillapp.activities.PharmacyLocation;
+import com.grupoupc.pastillapp.activities.PharmacyLocation;
 import com.grupoupc.pastillapp.models.Available;
 import com.grupoupc.pastillapp.utils.Constantes;
 
@@ -60,9 +60,11 @@ public class AvailableAdapter extends RecyclerView.Adapter<AvailableAdapter.Avai
             holder.llAvailable.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Intent i = new Intent(context, PharmacyLocation.class);
-                    //i.putExtra(Common.PH_ID, available.getPharmacy_id());
-                    //context.startActivity(i);
+                    Intent i = new Intent(context, PharmacyLocation.class);
+                    i.putExtra(Constantes.PH_ID, available.getPharmacy_id());
+                    i.putExtra(Constantes.A_PR_PRICE, available.getProduct_price());
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    context.startActivity(i);
                 }
             });
         }

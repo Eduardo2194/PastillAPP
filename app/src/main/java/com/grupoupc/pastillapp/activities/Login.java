@@ -1,20 +1,16 @@
 package com.grupoupc.pastillapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.grupoupc.pastillapp.R;
+import com.grupoupc.pastillapp.utils.Constantes;
 
 public class Login extends AppCompatActivity {
 
@@ -31,22 +28,11 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
 
+    //carga la pantalla para ingresar los datos del logueo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Full screen
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // Android 11 o superior
-            final WindowInsetsController insetsController = getWindow().getDecorView().getWindowInsetsController();
-            if (insetsController != null) {
-                insetsController.hide(WindowInsets.Type.statusBars());
-            }
-        } else { // Menor a android 11
-            getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
-            );
-        }
+        Constantes.setFullScreen(Login.this);
         setContentView(R.layout.activity_login);
 
         etEmail = findViewById(R.id.et_lEmail);
@@ -65,7 +51,6 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        //Evento que invoca al proceso de registro de nuevo usuario
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +59,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        //Evento que invoca al proceso de recuperar contraseña
+        //boton que nos envia a la pantalla de recuperar contraseña
         btnForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,11 +103,10 @@ public class Login extends AppCompatActivity {
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
+                            } else {
+                                progressDialog.dismiss();
+                                Toast.makeText(Login.this, "Ocurrió un error, intente de nuevo por favor.", Toast.LENGTH_SHORT).show();
                             }
-                            //else {
-                            //    progressDialog.dismiss();
-                            //       Toast.makeText(Login.this, task.getResult().toString(), Toast.LENGTH_SHORT).show();
-                           //}
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -143,5 +127,16 @@ public class Login extends AppCompatActivity {
             startActivity(new Intent(Login.this, Home.class));
             finish();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // Salimos de la aplicación cuando estemos en esta pantamma HOME
+        Intent close = new Intent(Intent.ACTION_MAIN);
+        close.addCategory(Intent.CATEGORY_HOME);
+        close.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(close);
     }
 }

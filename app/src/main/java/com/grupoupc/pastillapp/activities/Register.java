@@ -2,13 +2,9 @@ package com.grupoupc.pastillapp.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,11 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.grupoupc.pastillapp.R;
 import com.grupoupc.pastillapp.utils.Constantes;
-import com.grupoupc.pastillapp.utils.Constantes;
 
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.logging.ConsoleHandler;
 
 public class Register extends AppCompatActivity {
 
@@ -39,22 +33,11 @@ public class Register extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    //Cargamos el formulario de registro del usuario
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Full screen
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // Android 11 o superior
-            final WindowInsetsController insetsController = getWindow().getDecorView().getWindowInsetsController();
-            if (insetsController != null) {
-                insetsController.hide(WindowInsets.Type.statusBars());
-            }
-        } else { // Menor a android 11
-            getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
-            );
-        }
+        Constantes.setFullScreen(Register.this);
         setContentView(R.layout.activity_register);
 
         ImageView imgBack = findViewById(R.id.img_back);

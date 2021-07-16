@@ -1,13 +1,11 @@
 package com.grupoupc.pastillapp.activities;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,10 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,7 +36,6 @@ import com.google.firebase.storage.UploadTask;
 import com.grupoupc.pastillapp.R;
 import com.grupoupc.pastillapp.utils.Constantes;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -54,7 +50,7 @@ public class AddPharmacy extends AppCompatActivity {
 
     private CircleImageView civPharmacyPhoto;
     private EditText etPName, etPAddress, etPPhone, etPOpen, etPClose;
-    private String placeId;
+    private String pLat, pLng;
     private String pharmacyPhotoUrl;
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 2610;
@@ -80,7 +76,7 @@ public class AddPharmacy extends AppCompatActivity {
         civPharmacyPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                Constantes.openGallery(AddPharmacy.this);
             }
         });
 
@@ -108,25 +104,6 @@ public class AddPharmacy extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void openGallery() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(AddPharmacy.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(AddPharmacy.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            } else {
-                cropImagePicker();
-            }
-        } else {
-            cropImagePicker();
-        }
-    }
-
-    private void cropImagePicker() {
-        CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(1, 1)
-                .start(AddPharmacy.this);
     }
 
     private void uploadPhotoToStorage() {
@@ -179,7 +156,7 @@ public class AddPharmacy extends AppCompatActivity {
 
     // Utilizamos el servicio de Google Maps (Google Places API)
     private void initializeGooglePlaces() {
-        // SI el servico no ha sido inicializado, lo inicializamos
+        // SI el servicio no ha sido inicializado, lo inicializamos
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.google_places_key));
         }
@@ -187,7 +164,7 @@ public class AddPharmacy extends AppCompatActivity {
         // Llamamos al servicio de PlacesCliente (aunque no lo utilizamos más, es necesario para que funciones el buscador de calles)
         PlacesClient placesClient = Places.createClient(this);
 
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
+        List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
 
         // Al hacer clic en nuestro edittext se abrirá el buscador de calles de google
         etPAddress.setOnClickListener(new View.OnClickListener() {
@@ -215,8 +192,14 @@ public class AddPharmacy extends AppCompatActivity {
                 assert data != null;
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 etPAddress.setText(place.getAddress());
-                placeId = place.getId();
 
+                LatLng latLng = place.getLatLng();
+                if (latLng != null) {
+                    pLat = String.valueOf(latLng.latitude);
+                    pLng = String.valueOf(latLng.longitude);
+                } else {
+                    Log.i("LATLNG", "NO SE ENCONTRO LAS COORDENADAS");
+                }
             }
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult cropResult = CropImage.getActivityResult(data);
@@ -301,7 +284,8 @@ public class AddPharmacy extends AppCompatActivity {
             pharmacyValues.put(Constantes.PH_ID, pharmacyId);
             pharmacyValues.put(Constantes.PH_NAME, pharmacyName);
             pharmacyValues.put(Constantes.PH_ADDRESS, pharmacyAddress);
-            pharmacyValues.put(Constantes.PH_PLACE_ID, placeId);
+            pharmacyValues.put(Constantes.PH_LATITUDE, pLat);
+            pharmacyValues.put(Constantes.PH_LONGITUDE, pLng);
             pharmacyValues.put(Constantes.PH_PHONE, pharmacyPhone);
             pharmacyValues.put(Constantes.PH_OPEN, pharmacyOpen);
             pharmacyValues.put(Constantes.PH_CLOSE, pharmacyClose);
